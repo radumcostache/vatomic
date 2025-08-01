@@ -236,12 +236,12 @@ jobs:
 
 
   boogie-verification:
-    needs: [ prepare-docker ]
+    # needs: [ prepare-docker ]
     strategy:
       matrix:
         target: [ lse, llsc, lxe, no_polite_await ]
     runs-on: ubuntu-latest
-    container: ghcr.io/open-s4c/vatomic/boogie-ci:sha-${{ github.sha }}
+    container: ghcr.io/open-s4c/vatomic/boogie-ci:latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
