@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PATH=/usr/local/cargo/bin:/opt/z3:/opt/boogie:$PATH
 
 # Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recomends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     unzip \
