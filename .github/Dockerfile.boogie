@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     RUSTUP_HOME=/usr/local/rustup \
@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ninja-build \
     g++-aarch64-linux-gnu \
     gcc-aarch64-linux-gnu \
+    gcc-riscv64-linux-gnu \
     python3 \
     python3-pip \
     ruby-full \
