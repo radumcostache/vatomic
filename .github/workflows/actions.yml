@@ -140,7 +140,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/open-s4c/vatomic/${{ matrix.container.name }}
+          images: ghcr.io/${{ github.repository }}/${{ matrix.container.name }}
 
           tags: |
             type=edge,branch=dev
@@ -236,12 +236,12 @@ jobs:
 
 
   boogie-verification:
-    # needs: [ prepare-docker ]
+    needs: [ prepare-docker ]
     strategy:
       matrix:
         target: [ lse, llsc, lxe, no_polite_await ]
     runs-on: ubuntu-latest
-    container: ghcr.io/open-s4c/vatomic/boogie-ci:latest
+    container: ghcr.io/${{ github.repository }}/boogie-ci:sha-${{ github.sha }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
