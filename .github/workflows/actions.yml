@@ -1,5 +1,5 @@
 name: vatomic tests and verification
-on: [push]
+on: [push, pull_request]
 env:
   REGISTRY: ghcr.io
 
