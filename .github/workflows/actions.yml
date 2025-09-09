@@ -213,7 +213,7 @@ jobs:
       - name: Build
         run: cmake --build build --target build_boogie_armv8_${{ matrix.target }}_${{ matrix.group }}
       - name: Verify
-        run: ctest -j 4 --test-dir build/verify/builtin --timeout 400 
+        run: ctest -j 4 --test-dir build/verify/builtin --timeout 400 || true
       - name: Retry without timeout
         run: ctest --rerun-failed --test-dir build/verify/builtin
 
@@ -229,10 +229,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Configure
-        run: cmake -S. -Bbuild
+        run: cmake -S. -Bbuild -DBUILD_SPEC=riscv_builtin_${{ matrix.group }}
       - name: Build
         run: cmake --build build --target build_boogie_riscv_builtin_${{ matrix.group }}
       - name: Verify
-        run: ctest -j 4 --test-dir build/verify --timeout 400 
+        run: ctest -j 4 --test-dir build/verify/builtin --timeout 400 || true
       - name: Retry without timeout
         run: ctest --rerun-failed --test-dir build/verify/builtin
