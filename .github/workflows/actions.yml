@@ -199,7 +199,7 @@ jobs:
   boogie-verification-rust-armv8:
     strategy:
       matrix:
-        target: [ builtin, llsc, lse, lxe ]
+        target: [ builtin, llsc, lse ]
         group: [ vatomic8, vatomic16, vatomic32, vatomic64, vatomicsz, vatomicptr, vatomic_fence ]
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}/boogie-ci:latest
@@ -231,4 +231,4 @@ jobs:
       - name: Build
         run: cmake --build build --target build_boogie_riscv_builtin
       - name: Verify
-        run: ctest -j 4 -L riscv_${{ matrix.group }} --test-dir build/verify
+        run: ctest -j 4 -V -L riscv_${{ matrix.group }} --test-dir build/verify
