@@ -215,7 +215,7 @@ jobs:
       - name: Verify
         run: ctest -j 4 -L armv8_${{ matrix.target }}_${{ matrix.group }} --test-dir build/verify --timeout 800 || true
       - name: Retry without timeout
-        run: ctest --rerun-failed --test-dir build/verify
+        run: ctest --rerun-failed -L armv8_${{ matrix.target }}_${{ matrix.group }} --test-dir build/verify
 
   boogie-verification-rust-riscv:
     strategy:
@@ -235,4 +235,4 @@ jobs:
       - name: Verify
         run: ctest -j 3 -L riscv_builtin_${{ matrix.group }} --test-dir build/verify --timeout 800 || true
       - name: Retry without timeout
-        run: ctest --rerun-failed --test-dir build/verify
+        run: ctest --rerun-failed -L riscv_builtin_${{ matrix.group }} --test-dir build/verify
