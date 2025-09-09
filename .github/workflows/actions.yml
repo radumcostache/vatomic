@@ -202,7 +202,7 @@ jobs:
         target: [ builtin, llsc, lse ]
         group: [ vatomic8, vatomic16, vatomic32, vatomic64, vatomicsz, vatomicptr, vatomic_fence ]
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}/boogie-ci:latest
+    container: ghcr.io/open-s4c/vatomic/boogie-ci:latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -220,7 +220,7 @@ jobs:
       matrix:
         group: [ vatomic8, vatomic16, vatomic32, vatomic64, vatomicsz, vatomicptr, vatomic_fence ]
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}/boogie-ci:latest
+    container: ghcr.io/open-s4c/vatomic/boogie-ci:latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
