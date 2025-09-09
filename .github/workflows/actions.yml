@@ -226,6 +226,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Check z3 and boogie version
+        run: z3 --version
       - name: Configure
         run: cmake -S. -Bbuild -DBUILD_SPEC=riscv_builtin_${{ matrix.group }}
       - name: Build
