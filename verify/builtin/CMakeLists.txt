@@ -80,6 +80,10 @@ foreach(LIST ${LISTS})
     endforeach()
 endforeach()
 
+if(NOT DEFINED BUILD_SPEC)
+    set(BUILD_SPEC "ALL")
+endif()
+
 foreach(ARCH ${ARCHS})
     string(TOLOWER "${ARCH}" SUB_DIR)
     set(SUFFIX ${SUB_DIR})
@@ -87,33 +91,44 @@ foreach(ARCH ${ARCHS})
     set(ASM_FILE ${SUB_DIR}/atomics.s)
 
     foreach(TARGET ${${ARCH}_TARGETS})
-        string(TOLOWER "${SUFFIX}_${TARGET}" COMPOSED_TARGET)
-
-        if(${ARCH} STREQUAL "ARMV8")
-            add_custom_command(
-                OUTPUT ASM_${COMPOSED_TARGET}
-                COMMAND
-                    ${${ARCH}_CMAKE_C_COMPILER} ${${TARGET}_FLAGS}
-                    ${${ARCH}_FLAGS} "${VSYNC_INCLUDE}"
-                    ${CMAKE_SOURCE_DIR}/include/vsync/atomic.h -o ${ASM_FILE} &&
-                    ${CMAKE_CURRENT_BINARY_DIR}/cleaner.sh ${ASM_FILE}
-                COMMAND_EXPAND_LISTS
-                DEPENDS vatomic BUILTIN_SCRIPTS PERMISSION_SCRIPTS
-                COMMENT
-                    "Generating ${COMPOSED_TARGET} builtin atomics (with cleaner)"
-            )
-        else()
-            add_custom_command(
-                OUTPUT ASM_${COMPOSED_TARGET}
-                COMMAND
-                    ${${ARCH}_CMAKE_C_COMPILER} ${${TARGET}_FLAGS}
-                    ${${ARCH}_FLAGS} "${VSYNC_INCLUDE}"
-                    ${CMAKE_SOURCE_DIR}/include/vsync/atomic.h -o ${ASM_FILE}
-                COMMAND_EXPAND_LISTS
-                DEPENDS vatomic BUILTIN_SCRIPTS PERMISSION_SCRIPTS
-                COMMENT "Generating ${COMPOSED_TARGET} builtin atomics")
-        endif()
         foreach(GRP ${ALL_ATOMIC_GROUPS})
+
+            # Compose the string to match BUILD_SPEC
+            string(TOLOWER "${ARCH}_${TARGET}_${GRP}" COMPOSED_SPEC)
+
+            # Skip if BUILD_SPEC is set and doesn't match this combination
+            if(NOT BUILD_SPEC STREQUAL "ALL" AND NOT COMPOSED_SPEC STREQUAL "${BUILD_SPEC}")
+                continue()
+            endif()
+
+            string(TOLOWER "${SUFFIX}_${TARGET}" COMPOSED_TARGET)
+
+            # Compile/assemble commands
+            if(${ARCH} STREQUAL "ARMV8")
+                add_custom_command(
+                    OUTPUT ASM_${COMPOSED_TARGET}
+                    COMMAND
+                        ${${ARCH}_CMAKE_C_COMPILER} ${${TARGET}_FLAGS}
+                        ${${ARCH}_FLAGS} "${VSYNC_INCLUDE}"
+                        ${CMAKE_SOURCE_DIR}/include/vsync/atomic.h -o ${ASM_FILE} &&
+                        ${CMAKE_CURRENT_BINARY_DIR}/cleaner.sh ${ASM_FILE}
+                    COMMAND_EXPAND_LISTS
+                    DEPENDS vatomic BUILTIN_SCRIPTS PERMISSION_SCRIPTS
+                    COMMENT
+                        "Generating ${COMPOSED_TARGET} builtin atomics (with cleaner)"
+                )
+            else()
+                add_custom_command(
+                    OUTPUT ASM_${COMPOSED_TARGET}
+                    COMMAND
+                        ${${ARCH}_CMAKE_C_COMPILER} ${${TARGET}_FLAGS}
+                        ${${ARCH}_FLAGS} "${VSYNC_INCLUDE}"
+                        ${CMAKE_SOURCE_DIR}/include/vsync/atomic.h -o ${ASM_FILE}
+                    COMMAND_EXPAND_LISTS
+                    DEPENDS vatomic BUILTIN_SCRIPTS PERMISSION_SCRIPTS
+                    COMMENT "Generating ${COMPOSED_TARGET} builtin atomics")
+            endif()
+
             set(DEPS_VAR "${GRP}_${COMPOSED_TARGET}_DEPS")
             set(${DEPS_VAR} "")
 

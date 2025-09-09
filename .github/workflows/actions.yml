@@ -209,13 +209,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: Configure
-        run: cmake -S. -Bbuild
+        run: cmake -S. -Bbuild -DBUILD_SPEC=armv8_${{ matrix.target }}_${{ matrix.group }}
       - name: Build
         run: cmake --build build --target build_boogie_armv8_${{ matrix.target }}_${{ matrix.group }}
       - name: Verify
-        run: ctest -j 4 -L armv8_${{ matrix.target }}_${{ matrix.group }} --test-dir build/verify --timeout 800 || true
+        run: ctest -j 4 --test-dir build/verify/builtin --timeout 400 
       - name: Retry without timeout
-        run: ctest --rerun-failed -L armv8_${{ matrix.target }}_${{ matrix.group }} --test-dir build/verify
+        run: ctest --rerun-failed --test-dir build/verify/builtin
 
   boogie-verification-rust-riscv:
     strategy:
@@ -233,6 +233,6 @@ jobs:
       - name: Build
         run: cmake --build build --target build_boogie_riscv_builtin_${{ matrix.group }}
       - name: Verify
-        run: ctest -j 3 -L riscv_builtin_${{ matrix.group }} --test-dir build/verify --timeout 800 || true
+        run: ctest -j 4 --test-dir build/verify --timeout 400 
       - name: Retry without timeout
-        run: ctest --rerun-failed -L riscv_builtin_${{ matrix.group }} --test-dir build/verify
+        run: ctest --rerun-failed --test-dir build/verify/builtin
